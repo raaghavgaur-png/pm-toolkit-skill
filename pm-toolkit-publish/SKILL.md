@@ -84,5 +84,5 @@ cp -r skills/pm-toolkit ~/.claude/skills/
 
 ## About
 
-Built by [Meridian](https://meridian.ai) — an AI co-pilot for Product Managers.
+Built by [Meridian] — an AI co-pilot for Product Managers.
 Meridian helps PMs write PRDs, generate wireframes, and prioritize features in minutes.
