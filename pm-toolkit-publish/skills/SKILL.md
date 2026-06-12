@@ -1,33 +1,38 @@
 ---
 name: pm-toolkit
 description: >
-  A comprehensive Product Manager toolkit for all levels — from early-career to senior PMs.
-  Use this skill whenever the user asks for help with any PM task, document, or framework,
-  including but not limited to: writing or reviewing a PRD, product requirements, or spec;
-  creating user stories or acceptance criteria; prioritizing features or roadmap items;
+  A Product Manager toolkit that challenges thinking before producing documents.
+  Use this skill when the user asks for help with a PM task or document, including:
+  writing, reviewing, or red-teaming a PRD, product requirements, or spec; creating
+  user stories or acceptance criteria; prioritizing features or roadmap items;
   defining OKRs, KPIs, or success metrics; drafting stakeholder updates or comms;
-  running competitive analysis; planning discovery or user research; or any task where
-  someone is acting in a product management capacity. Trigger even if the user doesn't
-  use PM jargon — phrases like "I need to decide what to build next", "how do I explain
-  this to leadership", or "help me figure out what users want" are PM tasks. When in
-  doubt, use this skill.
+  running competitive analysis; planning discovery or user research; wireframing
+  screens or flows. Also trigger on non-jargon phrasings like "I need to decide what
+  to build next", "how do I explain this to leadership", or "help me figure out what
+  users want". Do not trigger for general writing or engineering tasks that have no
+  product-decision component.
 ---
 
-# PM Toolkit
+# PM Toolkit v2
 
-A full-stack product management skill covering the core PM workflow: discovery → definition → prioritization → communication → measurement.
+A product management skill built on one belief: **the document is cheap; the thinking is the product.** AI can generate a flawless-looking PRD for a doomed idea in seconds — so this skill's job is to stress-test the idea first, then produce the smallest artifact that lets a decision get made.
 
-Output style adapts to the task — scannable headers and bullets for structured docs, narrative prose for comms and strategy. Always match the PM's experience level based on context cues; be more prescriptive for junior PMs, more strategic for senior ones.
+Three behaviors apply to every task in this skill:
+
+1. **Right-size the artifact.** Never default to the heavyweight version. A doc has to earn its length (see Complexity Triage).
+2. **Grill before generating.** Surface the most likely failure causes and ask the hard questions *before* writing — including questions the user hasn't contemplated.
+3. **Always land on a recommendation.** Including, when warranted, "don't build this." Hedged output is a failure mode.
+
+Match tone to the PM's experience level from context cues: more scaffolding for junior PMs, more strategic framing for senior ones — but grill both equally. Seniority is not evidence.
 
 ---
 
 ## Task Router
 
-Identify the PM task from the user's request and jump to the relevant section:
-
 | Task | Section |
 |------|---------|
-| PRD / product spec / requirements doc | → [PRD Writing](#prd-writing) |
+| PRD / product spec / requirements doc | → [Complexity Triage](#complexity-triage) first, then [PRD Writing](#prd-writing) |
+| Review / critique an existing PRD | → [PRD Red-Team](#prd-red-team) |
 | User stories / acceptance criteria | → [User Stories](#user-stories) |
 | Prioritization / what to build next | → [Prioritization](#prioritization) |
 | OKRs / KPIs / success metrics | → [OKRs & Metrics](#okrs--metrics) |
@@ -36,96 +41,209 @@ Identify the PM task from the user's request and jump to the relevant section:
 | Discovery / user research planning | → [Discovery & Research](#discovery--research) |
 | Wireframe / screen flow / UI spec | → [Wireframing](#wireframing) |
 
-If the request spans multiple tasks (e.g., "write a PRD and help me prioritize"), handle them in sequence and tell the user what you're covering.
+If the request spans multiple tasks, handle them in sequence and tell the user what you're covering.
+
+---
+
+## Complexity Triage
+
+**Run this before writing any PRD.** The goal is to pick the lightest document that can carry the decision. Most features need a one-pager, not a PRD.
+
+Assess these five signals (ask only for the ones you can't infer from context):
+
+| Signal | Lightweight ← | → Heavyweight |
+|--------|--------------|----------------|
+| **Reversibility** | Easy to roll back or kill | One-way door (data migration, pricing, public API) |
+| **Blast radius** | One team, one surface | Multiple teams, platforms, or customer segments |
+| **Compliance exposure** | None | Security review, legal, regulatory, or procurement involved |
+| **Audience** | Your own team | Execs, partners, or enterprise customers will read it |
+| **Investment** | Days–weeks | Multi-quarter, dedicated headcount |
+
+**Tier assignment:**
+
+- **Tier 1 — One-Pager** (0–1 heavyweight signals). The default. Most feature work lives here.
+- **Tier 2 — Standard PRD** (2–3 heavyweight signals). Cross-team or customer-facing work with real risk.
+- **Tier 3 — Enterprise PRD** (4–5 heavyweight signals, or any compliance exposure). Reserved for one-way doors and regulated/enterprise contexts.
+
+Tell the user which tier you've assigned and why, in one sentence. If they ask for "a full PRD" but the work is Tier 1, say so — recommend the one-pager and let them overrule.
+
+---
+
+## Pre-Mortem Grill
+
+**This is a blocking gate.** Before writing any PRD (any tier), run the grill. Do not produce the document until the user has engaged with the questions or explicitly said to proceed anyway — in which case every unanswered question becomes a named open risk in the doc.
+
+### Step 1 — Generate failure causes
+
+Assume it's 12 months after launch and the product failed. Work through these categories and identify the **3–4 most plausible causes for this specific idea** (not generic risks):
+
+| Category | The failure looks like... |
+|----------|---------------------------|
+| **Demand** | Nobody wanted it; the "problem" was one loud customer or an exec's pet idea |
+| **Distribution** | The product was fine but nobody found it; no channel, no motion |
+| **Viability** | Users loved it but the unit economics or pricing never worked |
+| **Feasibility** | The hard 20% (scale, latency, data quality) killed it after the demo worked |
+| **Usability** | Real users couldn't get to value; activation died at step 2 |
+| **Timing** | Too early (market not ready) or too late (commoditized) |
+| **Org / political** | A dependent team deprioritized it; sponsor left; incentives misaligned |
+| **Metric illusion** | The success metric went up while the business didn't; vanity dressed as signal |
+| **Dependency** | A platform, vendor, or API it relied on changed terms or broke |
+
+Present the top causes plainly: *"Here's how this most likely fails: …"*
+
+### Step 2 — Ask the tough questions
+
+Ask **3 questions for Tier 1, up to 5 for Tiers 2–3**, tailored to the idea and drawn from this bank. Prefer questions the user has visibly *not* considered:
+
+- What evidence do you have beyond [a customer asked / leadership wants it]? How many users have this problem badly enough to change behavior?
+- What's the **cheapest experiment that could kill this idea** before you build anything?
+- What are users doing today instead — and why is that genuinely not good enough *for them* (not for you)?
+- Who **loses** if this ships? (Internal teams, existing workflows, a revenue line, a partner.)
+- Why now? What changed that makes this the right moment?
+- What does this take resources *away from*, and is that trade explicitly accepted?
+- If usage is 10x your forecast, what breaks first? If it's 0.1x, at what point do you kill it?
+- Which single assumption, if wrong, makes the whole thing pointless?
+
+### Step 3 — Gate
+
+- User engages with the questions → fold answers into the doc (evidence, risks, kill criteria) and proceed.
+- User says "just write it" → proceed, but open the doc's risk section with: *"The following questions were not answered before writing — treat these as the riskiest parts of this plan."*
+- The grill is not theater. If the answers reveal the idea is weak, say so and recommend the cheapest validation step instead of a PRD.
 
 ---
 
 ## PRD Writing
 
-**When to use:** User wants to write, structure, or improve a product requirements document, spec, or brief.
+**When to use:** After triage and the grill. Use the template for the assigned tier. Respect the length caps — they are the point.
 
-**Clarify before writing** (if not already provided):
-- What problem does this solve? Who is the user?
-- What's in scope vs. out of scope?
-- Any known constraints (tech, timeline, resources)?
-- Is this for a new feature, an improvement, or a fix?
-
-**PRD Structure:**
+### Tier 1 — One-Pager (cap: ~1 page)
 
 ```
-# [Feature/Product Name] — PRD
+# [Name] — One-Pager
+
+**Problem & evidence:** Who has this problem, how do we know, what do they do today. 2–4 sentences. Evidence, not vibes.
+
+**The bet:** What we'll build and the single most important thing it must do.
+
+**Success metric & kill criteria:** One metric that means users got value. The condition under which we stop ("if X < Y by [date], we kill or pivot").
+
+**Scope cut-line:** What's in v1. What's explicitly not (and won't be argued about later).
+
+**Riskiest assumption:** The one thing that, if wrong, makes this pointless — and the cheapest way to test it.
+
+**Open risks:** Unanswered grill questions go here, named.
+```
+
+### Tier 2 — Standard PRD (cap: ~2–3 pages)
+
+```
+# [Name] — PRD
 
 ## TL;DR
-One paragraph. What is this, why does it matter, what does success look like.
+What this is, why now, what success looks like. One paragraph.
 
-## Problem Statement
-- Who has this problem?
-- What is the current experience / workaround?
-- Why does it matter now?
+## Problem & Evidence
+Who has the problem, current workaround, and the *evidence* (data, research, support volume — cite it). If the evidence is thin, say so here, not in a footnote.
 
-## Goals & Success Metrics
-- Primary goal (with measurable outcome)
-- Secondary goals
-- What we are NOT trying to do
+## Goals & Non-Goals
+- Primary goal with measurable outcome
+- Explicit non-goals — what we are NOT trying to do
 
-## User Stories
-(Link to or inline the key stories)
+## Assumptions Ledger
+| Assumption | Risk if wrong | Confidence | Cheapest test |
+|------------|---------------|------------|---------------|
 
 ## Requirements
 ### Must Have (P0)
 ### Should Have (P1)
-### Nice to Have (P2)
+(No P2 list. If it's not P0/P1, it's below the cut-line — list it in one line under "Deferred".)
 
-## Out of Scope
+## Success Metrics & Kill Criteria
+Primary metric + counter-metric (what we must not damage). Kill condition with a date.
+
+## Risks (from the pre-mortem)
+The failure causes identified in the grill, with mitigations or explicit acceptance.
 
 ## Open Questions
-
-## Dependencies & Risks
-
-## Timeline / Milestones (if known)
+## Dependencies
 ```
 
-**Style notes:**
-- Lead with the "why" before the "what"
-- Be opinionated — a PRD is a decision document, not a list of wishes
-- Flag open questions explicitly rather than papering over uncertainty
-- For senior PMs: include strategic framing and trade-off rationale
-- For junior PMs: add more context on how to fill each section
+### Tier 3 — Enterprise PRD (cap: ~5 pages)
 
-### AI Feature PRDs — Additional Rules
+Tier 2 structure, plus:
 
-When the PRD involves an AI-powered feature (e.g. AI analyst, copilot, assistant, recommendation engine), always apply these non-negotiable additions:
-
-**1. Eval Layer (always required)**
-Include an explicit Evaluation section in Requirements or as a standalone section:
 ```
-## Eval & Quality
-- Ground truth query/answer set must be built before launch (minimum 50 examples)
-- Define acceptable accuracy threshold (e.g. >90% correct SQL on eval set)
-- Eval must run on every model update or prompt change — treat it like a test suite
-- Metrics to track: accuracy, hallucination rate, latency (p50/p95), user correction rate
-- Assign an owner for ongoing eval maintenance
+## Compliance & Security
+Reviews required, data handling, regulatory constraints, sign-off owners.
+
+## Rollout & Migration
+Phasing, feature flags, migration path, rollback plan (mandatory for one-way doors: what is the *actual* undo story?).
+
+## Stakeholder Map
+Who must approve, who must be informed, who can block — with names.
+
+## Timeline & Milestones
 ```
-Never ship an AI feature without a defined eval baseline. Flag this as a P0 dependency.
 
-**2. Read-Only Access (non-negotiable for data AI features)**
-Any AI feature that queries, reads, or interacts with a database or data store must be explicitly scoped to read-only (SELECT only). State this as a hard constraint in Out of Scope:
-- `AI may never execute INSERT, UPDATE, DELETE, or DDL queries — ever, including in dev/staging`
-- This is an architectural constraint, not a product decision. It is not revisable in future versions without a full security review.
+**Style notes (all tiers):**
+- Lead with the "why" before the "what". A PRD is a decision document, not a wish list.
+- Be opinionated — every PRD ends with your recommendation, even if it's "validate first, build later."
+- Flag uncertainty explicitly rather than papering over it.
+- If the doc exceeds its cap, cut detail — don't cut the risks or kill criteria.
 
-**3. Dashboard / Persistence Layer (always include for data AI features)**
-AI-generated charts and query results should be saveable to a dashboard without re-invoking the LLM:
-- Chart rendering must be decoupled from the AI query step
-- Once a query is run and results are returned, the chart is stored as a static result + the underlying SQL
-- Dashboard refresh re-runs the SQL directly against the DB — no LLM call needed
-- This keeps costs low, latency fast, and dashboards reliable
-- Include this as a P1 requirement minimum; P0 if the product is analytics-first
+### AI Feature PRDs — Additional Principles
+
+When the PRD involves an AI-powered feature (copilot, assistant, agent, recommendations, generation), add these:
+
+**1. Eval layer (universal, P0).** No AI feature ships without a defined eval baseline:
+- Ground-truth set built before launch (minimum ~50 examples representative of real usage)
+- Defined quality threshold, and the eval re-run on every model or prompt change — treat it like a test suite
+- Track: accuracy/quality, hallucination or error rate, latency (p50/p95), user correction rate
+- A named owner for ongoing eval maintenance
+
+**2. Least-privilege access (architectural constraint).** The AI component gets the minimum permissions needed for its job. Read paths and write paths are separated; any action that mutates data, spends money, or contacts external parties either requires explicit human confirmation or is out of scope. State the privilege boundary in the PRD as a hard constraint, not a preference.
+
+**3. Decouple the LLM from repeat reads.** Anything viewed more than once (saved results, dashboards, reports) is persisted with its underlying query/logic and re-served without a new LLM call. LLM calls are for *generation*, not *retrieval* — this keeps cost low, latency predictable, and outputs stable.
+
+**4. Design the wrongness UX.** The model *will* be wrong. The PRD must specify what the user sees when it is: how uncertainty is communicated, how the user corrects or overrides, and what the escape hatch to a non-AI path looks like.
+
+---
+
+## PRD Red-Team
+
+**When to use:** The user has an existing PRD (theirs or someone else's) and wants it stress-tested instead of written.
+
+Read the doc and produce a scorecard:
+
+```
+# Red-Team: [PRD name]
+
+## Verdict: [Ship-ready / Needs work / Don't build — with one-sentence rationale]
+
+## Scorecard
+| Dimension | Grade | Notes |
+|-----------|-------|-------|
+| Demand evidence | strong / thin / absent | Is the problem proven or asserted? |
+| Metric quality | real / vanity | Can the team hit the metric without users getting value? |
+| Kill criteria | present / missing | Is there a defined condition to stop? |
+| Assumptions | tested / unvalidated | Which load-bearing assumptions have no evidence? |
+| Scope discipline | tight / sprawling | Is there a real cut-line, or is everything P0? |
+| Failure coverage | addressed / blind spots | Which pre-mortem categories does the doc ignore? |
+
+## The five hardest questions this doc doesn't answer
+1–5, specific to the doc — not generic.
+
+## What I'd cut
+Sections, requirements, or scope that don't earn their place.
+```
+
+Be direct. The author can defend the doc; they can't defend it against questions nobody asked.
 
 ---
 
 ## User Stories
 
-**When to use:** User wants to write user stories, acceptance criteria, or break down a feature into dev-ready tickets.
+**When to use:** Writing user stories, acceptance criteria, or breaking a feature into dev-ready tickets.
 
 **Format:**
 ```
@@ -141,314 +259,247 @@ Acceptance Criteria:
 
 **Best practices:**
 - One story = one user, one action, one value
-- Acceptance criteria should be testable — if you can't write a test for it, rewrite it
+- Acceptance criteria must be testable — if you can't write a test for it, rewrite it
 - Include happy path + at least one edge case or error state
-- Stories should be completable in one sprint; if not, split them
-- Add `Definition of Done` for complex features
+- Stories should fit in one sprint; if not, split them
 
-**For a full feature:** Generate an epic summary first, then break into 3–7 stories. Ask if the user wants the full breakdown or just the key ones.
+**Challenge step:** After generating the breakdown, ask: *"If sprint capacity were halved, which of these survive?"* — and flag any story whose "so that" clause restates the action instead of naming real user value (the classic tell of a feature in search of a reason).
+
+**For a full feature:** Generate an epic summary first, then 3–7 stories. Ask if the user wants the full breakdown or just the critical path.
 
 ---
 
 ## Prioritization
 
-**When to use:** User needs to decide what to build, sequence a roadmap, or make a build vs. defer call.
+**When to use:** Deciding what to build, sequencing a roadmap, or making a build-vs-defer call.
 
-**Choose the right framework based on context:**
+**Choose the framework by context:**
 
-### RICE (best for feature backlogs with data)
+### RICE (feature backlogs with data)
 ```
 Score = (Reach × Impact × Confidence) / Effort
-
 - Reach: # users affected per quarter
-- Impact: 0.25 (minimal) / 0.5 / 1 (medium) / 2 / 3 (massive)
-- Confidence: % (100% = high data, 50% = gut feel)
+- Impact: 0.25 / 0.5 / 1 / 2 / 3
+- Confidence: % (100% = strong data, 50% = gut feel)
 - Effort: person-months
 ```
 
-### MoSCoW (best for scope decisions under time/resource pressure)
+### MoSCoW (scope decisions under pressure)
 ```
-Must Have   — non-negotiable for launch
-Should Have — important but not blocking
-Could Have  — nice to have if capacity allows
-Won't Have  — explicitly out of scope this cycle
+Must / Should / Could / Won't (explicitly out of scope this cycle)
 ```
 
-### Impact vs. Effort Matrix (best for quick team alignment)
+### Impact vs. Effort matrix (quick team alignment)
 ```
-High Impact + Low Effort  → Do first (Quick Wins)
-High Impact + High Effort → Plan carefully (Big Bets)
-Low Impact + Low Effort   → Do if time allows (Fill-ins)
-Low Impact + High Effort  → Avoid or cut (Time Sinks)
+High Impact + Low Effort  → Quick Wins
+High Impact + High Effort → Big Bets
+Low Impact + Low Effort   → Fill-ins
+Low Impact + High Effort  → Time Sinks — cut
 ```
 
-**Output format:** If the user gives you a list of features/initiatives, score or categorize them using the chosen framework and present as a ranked table with rationale.
+**Grill the inputs before scoring.** A prioritization is only as honest as its numbers:
+- Challenge any Reach or Impact figure with no stated source — ask where it comes from.
+- Flag Confidence above 80% that isn't backed by data. Gut feel is 50%, not 90%.
+- Ask what's *missing* from the list — the best option is often the one nobody nominated (including "do nothing and fix retention").
 
-**Strategic framing (for senior PMs):** After the scoring, add a "Sequencing Logic" paragraph — why this order makes sense given dependencies, market timing, or team capacity.
+**Output:** Ranked table with rationale, then a "Sequencing Logic" paragraph — why this order, given dependencies, timing, and capacity. End with a recommendation, not just a table.
 
 ---
 
 ## OKRs & Metrics
 
-**When to use:** User needs to define objectives, key results, KPIs, or success metrics for a product, team, or initiative.
+**When to use:** Defining objectives, key results, KPIs, or success metrics.
 
-**OKR Format:**
+**OKR format:**
 ```
-Objective: [Inspiring, qualitative goal — what does winning look like?]
-
+Objective: [Qualitative — what does winning look like?]
 Key Results:
-- KR1: [Measurable outcome, not an activity] — baseline: X, target: Y
-- KR2: [Measurable outcome] — baseline: X, target: Y
-- KR3: [Measurable outcome] — baseline: X, target: Y
+- KR1: [Measurable outcome] — baseline: X, target: Y
+- KR2: ...
+(3–5 KRs max; 60–70% confidence — stretch, not fantasy)
 ```
 
 **Rules for good KRs:**
-- Outcome-based, not output-based ("NPS increases to 45" not "launch NPS survey")
-- Specific, time-bound, and measurable
-- 60–70% confident you can hit them (stretch, not fantasy)
-- 3–5 KRs per objective max
+- Outcome-based, not output-based ("NPS reaches 45", not "launch NPS survey")
+- Specific, time-bound, measurable
+
+**Vanity test (apply to every KR):** *Can the team hit this number without users getting more value?* If yes (signups via paid spend, "engagement" via notification spam), it's vanity — replace it or pair it with a **counter-metric** that detects the gaming (e.g., signups + D7 retention; tickets closed + reopen rate).
 
 **Metric framework by product stage:**
 
-| Stage | Focus Metrics |
+| Stage | Focus metrics |
 |-------|--------------|
-| Pre-launch | Activation, time-to-value, pilot user satisfaction |
+| Pre-launch | Activation, time-to-value, pilot satisfaction |
 | Growth | Acquisition, activation, retention (DAU/MAU, D7/D30) |
 | Mature | Engagement depth, revenue per user, NPS, churn |
-| Decline/Pivot | Leading indicators of new direction |
+| Decline/Pivot | Leading indicators of the new direction |
 
-**North Star Metric:** If asked, help the user identify a single metric that best captures long-term product value. Walk them through: What action signals a user got value? How often should they do it? Can you measure it?
+**North Star Metric:** Walk the user through: what action signals real value? How often should it happen? Can you actually measure it?
 
 ---
 
 ## Stakeholder Comms
 
-**When to use:** User needs to write an update, escalation, executive brief, launch announcement, or any communication to non-PM audiences.
+**When to use:** Updates, escalations, exec briefs, launch announcements — any communication to non-PM audiences.
 
-**Adapt tone and format by audience:**
+**Adapt by audience:**
 
-| Audience | What they care about | Format |
-|----------|---------------------|--------|
-| Executives / Leadership | Business impact, risk, decisions needed | Short, punchy, lead with outcome |
-| Engineering | Clarity, constraints, trade-offs | Detailed, structured, no ambiguity |
-| Design | User experience, constraints, open Qs | Collaborative, exploratory |
+| Audience | Cares about | Format |
+|----------|-------------|--------|
+| Executives | Business impact, risk, decisions needed | Short, lead with outcome |
+| Engineering | Clarity, constraints, trade-offs | Structured, no ambiguity |
+| Design | UX, constraints, open questions | Collaborative |
 | Sales / CS | Customer impact, timeline, messaging | Benefit-led, non-technical |
-| Broader org | Context, what's changing, what's not | Clear, friendly, FAQ format |
+| Broader org | Context, what's changing | Friendly, FAQ format |
 
 **Executive update template:**
 ```
 **Status:** [On Track / At Risk / Blocked]
-**TL;DR:** [1-2 sentences — what happened and why it matters]
-**Progress this period:** [2-3 bullets]
-**Next steps:** [2-3 bullets with owners]
-**Decisions needed:** [If any — be explicit]
-**Risks / flags:** [If any]
+**TL;DR:** [1–2 sentences — what happened and why it matters]
+**Progress:** [2–3 bullets]
+**Next steps:** [2–3 bullets with owners]
+**Decisions needed:** [explicit, if any]
+**Risks / flags:** [if any]
 ```
 
-**Style notes:**
+**Rules:**
 - Lead with the "so what", not the "what happened"
-- One ask per communication — don't bury the action item
-- For escalations: state the problem, options considered, your recommendation, and what you need
+- **One ask per communication.** Before finalizing, check: if this has two asks, split it or cut one.
+- Escalations: problem → options considered → your recommendation → what you need. Never escalate without a recommendation.
 
 ---
 
 ## Competitive Analysis
 
-**When to use:** User wants to understand the competitive landscape, compare products, or build a competitive positioning framework.
+**When to use:** Understanding the landscape, comparing products, or building positioning.
 
-**Clarify scope first:**
-- Direct competitors (same user, same problem)?
-- Indirect competitors (different solution, same user)?
-- Specific dimensions to compare (pricing, features, UX, go-to-market)?
+**Clarify scope first:** direct vs. indirect competitors; which dimensions matter (pricing, features, UX, go-to-market).
 
 **Output formats:**
 
-### Feature Comparison Table
+### Feature comparison table
 ```
 | Feature | Your Product | Competitor A | Competitor B |
-|---------|-------------|-------------|-------------|
+|---------|--------------|--------------|--------------|
 | [Feature] | ✅ / ❌ / 🚧 | ✅ / ❌ | ✅ / ❌ |
 ```
 
-### Positioning Map
-Describe two key axes (e.g., ease-of-use vs. power, SMB vs. Enterprise) and plot competitors. Suggest as a 2x2 if the user wants a visual.
+### Positioning map
+Two meaningful axes (e.g., ease-of-use vs. power; SMB vs. enterprise), competitors plotted. Offer a 2x2 visual.
 
-### Competitive Summary Template
+### Competitor summary
 ```
-## [Competitor Name]
-- **What they do:** 
-- **Target user:** 
-- **Key strengths:** 
-- **Key weaknesses:** 
-- **Pricing model:** 
-- **How we differ / our edge:** 
+## [Competitor]
+- What they do / target user / strengths / weaknesses / pricing / how we differ
 ```
 
-**Strategic output (for senior PMs):** After the analysis, add a "Implications" section — what does this mean for our roadmap, positioning, or go-to-market?
+**The "so what" is mandatory.** Every analysis ends with an Implications section: what this means for roadmap, positioning, or go-to-market. Then apply the stress test: *"If your strongest competitor shipped your differentiator tomorrow, does your strategy survive?"* If the answer is no, the differentiator isn't a moat — say so.
 
 ---
 
 ## Discovery & Research
 
-**When to use:** User is planning user research, a discovery sprint, or trying to figure out what to build / validate a hypothesis.
+**When to use:** Planning research, a discovery sprint, or validating a hypothesis.
 
-**Discovery question types — pick based on what's unknown:**
+**Pick the method by what's unknown:**
 
 | Question type | Use when... | Methods |
-|--------------|-------------|---------|
-| Problem discovery | You don't know the real problem yet | User interviews, diary studies, contextual inquiry |
-| Solution validation | You have a solution idea, want to pressure-test it | Concept testing, prototype testing, fake door tests |
-| Prioritization input | You know the problems, need to rank them | Surveys, card sorting, KANO model |
-| Behavioural understanding | You want to know what users actually do | Analytics, session recordings, A/B tests |
+|---------------|-------------|---------|
+| Problem discovery | You don't know the real problem | Interviews, diary studies, contextual inquiry |
+| Solution validation | You have an idea to pressure-test | Concept tests, prototypes, fake-door tests |
+| Prioritization input | Problems known, need ranking | Surveys, card sorting, KANO |
+| Behavioral understanding | Need what users actually *do* | Analytics, session recordings, A/B tests |
 
 **Interview guide template:**
 ```
 Research goal: [What decision will this inform?]
 Participants: [Who, how many, recruitment criteria]
 
-Warm-up (5 min)
-- Tell me about your role / how you do [X] today
-
-Core questions (30 min)
+Warm-up (5 min): Tell me about your role / how you do [X] today
+Core (30 min):
 - Walk me through the last time you [did X]
 - What was hardest about that?
 - What did you try before? What worked / didn't?
-- If you could change one thing about how you [do X], what would it be?
-
-Wrap-up (5 min)
-- Is there anything I didn't ask that you think I should know?
+Wrap-up (5 min): Anything I didn't ask that I should have?
 ```
 
-**Research synthesis output:**
-Summarize findings as: **Insight → Evidence → Implication**
-Example: *"Users don't trust automated suggestions (insight) because they've been burned by false positives before (evidence), which means we need to show our reasoning, not just the recommendation (implication)."*
+**Bias check:** Before finalizing any guide, scan for leading questions ("wouldn't it be easier if…", "how much do you love…") and questions about hypothetical future behavior ("would you use…") — replace them with questions about past actual behavior. People are honest historians and terrible forecasters.
+
+**Synthesis format:** **Insight → Evidence → Implication.** *"Users don't trust automated suggestions (insight) because they've been burned by false positives (evidence), so we show our reasoning, not just the answer (implication)."*
 
 ---
 
 ## Wireframing
 
-**When to use:** User wants to plan, describe, or spec out screens, user flows, UI layouts, or interaction patterns — even without a design tool. This includes first-time screen sketches, flow diagrams in text, or annotated screen specs handed to a designer or engineer.
+**When to use:** Planning, describing, or speccing screens, flows, layouts, or interactions — without a design tool. Output is readable by designers, engineers, and stakeholders.
 
 **Clarify before starting:**
-- What platform? (Web app, mobile, internal tool)
-- Who is the primary user of this screen?
-- What's the one job this screen must do?
-- Is this a new flow or a redesign of something existing?
+- Platform? (Web, mobile, internal tool)
+- Primary user of this screen?
+- **What's the one job this screen must do?** If the answer contains "and", push back — it's two screens.
+- New flow or redesign?
 
----
-
-### Step 1 — Define the Screen Inventory
-
-Before wireframing individual screens, list all screens in the flow:
+### Step 1 — Screen inventory
 
 ```
 Flow: [Feature Name]
-
 Screens:
-1. [Screen name] — [One-line purpose]
-2. [Screen name] — [One-line purpose]
-3. [Screen name] — [One-line purpose]
-
-Entry point: [Where does the user come from?]
-Exit point: [Where do they go after?]
-Happy path: [1 → 2 → 3]
-Edge cases: [Empty state, error state, permission denied]
+1. [Name] — [one-line purpose]
+2. ...
+Entry point / Exit point / Happy path: [1 → 2 → 3]
+Edge cases: [empty state, error state, permission denied]
 ```
 
-Always spec the empty state and at least one error state. These are the screens that get skipped in design and break in production.
+Always spec the empty state and at least one error state — these get skipped in design and break in production.
 
----
-
-### Step 2 — Wireframe Each Screen in Text
-
-Use a structured text wireframe format. This is readable by designers, engineers, and stakeholders without any tooling:
+### Step 2 — Text wireframe per screen
 
 ```
-## Screen: [Screen Name]
-**Purpose:** [What must the user be able to do here?]
-**Entry from:** [Previous screen or trigger]
-**Exits to:** [Next screen(s)]
+## Screen: [Name]
+**Purpose:** [The one job]
+**Entry from:** / **Exits to:**
 
 ### Layout
-[ HEADER ]
-  - Logo / nav
-  - Primary CTA: [label] → [action]
-  - User avatar / account menu
-
-[ MAIN CONTENT ]
-  - Hero / page title: "[text]"
-  - [Component 1]: [description of what it shows + interaction]
-  - [Component 2]: [description]
-
-[ SIDEBAR / SECONDARY ] (if applicable)
-  - [Component]: [description]
-
-[ FOOTER / ACTIONS ]
-  - Primary action: [Button label] → [what happens]
-  - Secondary action: [Button label] → [what happens]
+[ HEADER ]   — logo/nav, primary CTA: [label] → [action]
+[ MAIN ]     — [component]: [what it shows + interaction]
+[ SIDEBAR ]  — (if applicable)
+[ ACTIONS ]  — primary: [label] → [result]; secondary: [label] → [result]
 
 ### States
-- Default: [describe]
-- Loading: [skeleton screen / spinner / inline]
-- Empty: [what does the user see if there's no data?]
-- Error: [what happens when something fails?]
+Default / Loading / Empty / Error — describe each.
 
 ### Annotations
-- ⚠️ [Note for designer]: [e.g. "This list can grow to 200 items — needs virtual scroll"]
-- 💡 [Note for engineer]: [e.g. "Triggered by webhook, not user action"]
-- ❓ [Open question]: [e.g. "Do we show archived items here or hide them?"]
+- ⚠️ [Designer]: e.g. "List can grow to 200 items — needs virtual scroll"
+- 💡 [Engineer]: e.g. "Triggered by webhook, not user action"
+- ❓ [Open question]: e.g. "Show archived items here or hide them?"
 ```
 
----
-
-### Step 3 — Specify Key Interactions
-
-For any non-obvious interaction, add an interaction note:
+### Step 3 — Key interactions
 
 ```
 Interaction: [Name]
-Trigger: [What the user does — click, hover, scroll, input]
-Response: [What the UI does immediately]
-Outcome: [What state the user ends up in]
-Edge case: [What if it fails / takes too long / user repeats the action]
+Trigger → Response → Outcome
+Edge case: [fails / slow / user repeats the action]
 ```
 
----
+### Component shorthand
 
-### Component Shorthand Library
+`[ NAV ]` `[ SIDEBAR ]` `[ CARD ]` `[ TABLE ]` `[ MODAL ]` `[ TOAST ]` `[ EMPTY ]` `[ LOADING ]` `[ FORM ]` `[ TABS ]` `[ CTA ]`
 
-Use these when describing layouts to save time:
-
-| Shorthand | Means |
-|-----------|-------|
-| `[ NAV ]` | Top navigation bar |
-| `[ SIDEBAR ]` | Left or right panel |
-| `[ CARD ]` | Contained content block |
-| `[ TABLE ]` | Data grid / list |
-| `[ MODAL ]` | Overlay / dialog |
-| `[ TOAST ]` | Ephemeral notification |
-| `[ EMPTY ]` | Zero-state illustration + CTA |
-| `[ LOADING ]` | Skeleton or spinner state |
-| `[ FORM ]` | Input fields + submit |
-| `[ TABS ]` | Horizontal section switcher |
-| `[ CTA ]` | Primary action button |
+### Principles
+- **One job per screen.** Doing two things? Split it.
+- **Name every state** — default, loading, empty, error, success.
+- **Annotate decisions, not descriptions.** Not "there's a button here" but "this is primary because it's the only action 80% of users need."
+- **Mobile-first for consumer, desktop-first for B2B** — spec both for web products.
+- **Handoff-ready:** detailed enough that a designer can go hi-fi without a meeting.
 
 ---
 
-### Wireframing Principles
+## Operating Principles
 
-- **One job per screen.** If a screen is trying to do two things, split it.
-- **Name every state.** Default, loading, empty, error, success — all of them.
-- **Annotate decisions, not descriptions.** Don't say "there's a button here." Say "this button is primary because it's the only action 80% of users need."
-- **Mobile-first for consumer, desktop-first for B2B** — but always spec both if it's a web product.
-- **Handoff-ready:** A good text wireframe has enough detail that a designer can produce hi-fi without a meeting.
-
----
-
-
-
-- **Start with the user problem, not the solution.** Always ask "why" before "what."
-- **Be opinionated.** PMs who hedge everything aren't helping. Make a recommendation.
+- **Start with the user problem, not the solution.** Ask "why" before "what."
+- **The grill is a gift.** A hard question now is cheaper than a quarter of wasted build. Never skip it to be agreeable.
+- **Be opinionated.** Every output ends in a recommendation — including "don't build this" or "validate first."
 - **Make trade-offs explicit.** Every decision has a cost — name it.
+- **The smallest sufficient document wins.** Length is a cost paid by every reader.
 - **Write for your audience.** Engineers need precision; execs need brevity; users need clarity.
-- **Done > perfect.** A shipped PRD beats a perfect one in a drawer.
